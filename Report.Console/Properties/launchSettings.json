@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Report.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "-m directory -i \"D:\\Documents\\Source\\repos\\TeamCityLogParserWeb\\TeamCityLogParserWeb\\bin\\Debug\\netcoreapp3.1\""
+    }
+  }
+}
