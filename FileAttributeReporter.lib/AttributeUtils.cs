@@ -88,31 +88,44 @@ namespace FileAttributeReporter.lib
             return BinaryArchitecture.Unknown;
         }
 
-        public static FileData GetFileAttributes(string fullPath)
+        public static FileData GetFileAttributes(string fullPath, Action<string> reporter)
         {
             var file = new FileInfo(fullPath);
 
-            var fileName = file.Name;
-            var filePath = file.Directory?.FullName;
-            var machineName = Environment.MachineName;
-            var lastModified = File.GetLastWriteTime(fullPath);
-            var architecture = GetBinaryArchitecture(fullPath);
-            var fileVersionInfo = FileVersionInfo.GetVersionInfo(fullPath);
-            var fileData = new FileData(Name:fileName, Path: filePath, MachineName: machineName, LastModDateTime: lastModified, Architecture: architecture, FileVersion: fileVersionInfo.FileVersion);
-
-            return fileData;
+            try
+            {
+                var fileName = file.Name;
+                var filePath = file.Directory?.FullName;
+                var machineName = Environment.MachineName;
+                var lastModified = File.GetLastWriteTime(fullPath);
+                var architecture = GetBinaryArchitecture(fullPath);
+                var fileVersionInfo = FileVersionInfo.GetVersionInfo(fullPath);
+                var fileData = new FileData(Name: fileName, Path: filePath, MachineName: machineName, LastModDateTime: lastModified, Architecture: architecture, FileVersion: fileVersionInfo.FileVersion);
+                return fileData;
+            }
+            catch (Exception ex)
+            {
+                reporter?.Invoke($"Failed to get data for {file.Name} : {ex.Message}");
+                throw;
+            }
         }
 
-        public static IEnumerable<string> GetFiles(string path, string searchPatternExpression = "", SearchOption searchOption = SearchOption.TopDirectoryOnly)
+        public static IEnumerable<string> GetFiles(string path, string searchPatternExpression = "", SearchOption searchOption = SearchOption.TopDirectoryOnly, Action<string> reporter = null)
         {
+            reporter?.Invoke($"Searching for file(s) at {path} ...");
             var reSearchPattern = new Regex(searchPatternExpression, RegexOptions.IgnoreCase);
             return Directory.EnumerateFiles(path, "*", searchOption).Where(file => reSearchPattern.IsMatch(Path.GetExtension(file)));
         }
 
-        public static List<FileData> GetFilesInDirectoryAttributes(string fullPath, bool recursive)
+        public static List<FileData> GetFilesInDirectoryAttributes(string fullPath, bool recursive, Action<string> reporter)
         {
-            var files = GetFiles(fullPath, @"\.exe|\.dll", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-            var allData = files.Select(GetFileAttributes).ToList();
+            var files = GetFiles(fullPath, @"\.exe|\.dll", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly, reporter);
+            var allData = files.Select(x => 
+            {
+                reporter?.Invoke($"Getting file information for : {x}");
+                return GetFileAttributes(x, reporter); 
+            }).ToList();
+
             return allData;
         }
 

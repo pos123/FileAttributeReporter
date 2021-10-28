@@ -14,8 +14,10 @@ namespace FileAttributeReporter.lib.OutputReporters
 {
     public class ExcelReporter
     {
-        public ReportValidation Report(ReportResult result, string outputPath)
+        public ReportValidation Report(ReportResult result, string outputPath, Action<string> logReporter)
         {
+            logReporter?.Invoke("Outputting excel report ...");
+
             var startRow = 2;
             var startCol = 2;
             var now = DateTime.Now;
@@ -46,9 +48,9 @@ namespace FileAttributeReporter.lib.OutputReporters
             // Output file
             var directory = string.IsNullOrEmpty(outputPath) ? Directory.GetCurrentDirectory() : outputPath;
             var outputFile = Path.Combine(directory, $"file_attributes_output_{now:dd_MM_yyyy_HH_mm_ss}.xlsx");
-            workbook.SaveAs(outputFile);
 
-            return new ReportValidation(Success: true, Reason: $"File generated at: {outputFile}");
+            workbook.SaveAs(outputFile);
+            return new ReportValidation(Success: true, Reason: outputFile);
         }
 
         private void OutputTitle(IXLWorksheet workSheet, int row, int col)
@@ -105,7 +107,8 @@ namespace FileAttributeReporter.lib.OutputReporters
             workSheet.Cell(row, col++).Value = fileData.FileVersion;
 
             // LastModDateTime
-            workSheet.Cell(row, col).Value = fileData.LastModDateTime;
+            string parsedDate = fileData.LastModDateTime.ToString("dd/MM/yyyy HH:mm:ss");
+            workSheet.Cell(row, col).Value = parsedDate;
             workSheet.Cell(row, col).SetDataType(XLDataType.DateTime);
         }
     }

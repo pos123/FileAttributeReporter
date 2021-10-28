@@ -19,7 +19,7 @@ namespace FileAttributeReporter.lib.Test
             var parameters = new Parameters(
                 Path: testPath,
                 ParameterSearchMode: SearchMode.File, ParameterResultType: ResultType.ExcelFile,
-                string.Empty);
+                string.Empty, null);
 
             var validationResult = Reporter.Validate(parameters);
             Assert.True(validationResult.Success);

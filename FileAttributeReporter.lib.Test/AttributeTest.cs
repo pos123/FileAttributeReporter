@@ -10,7 +10,7 @@ namespace FileAttributeReporter.lib.Test
         [Fact]
         public void GivenFileName_CheckAttributesAreCorrect()
         {
-            var fileAttributes = AttributeUtils.GetFileAttributes(testPath);
+            var fileAttributes = AttributeUtils.GetFileAttributes(testPath, null);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using CommandLine;
 using FileAttributeReporter.lib;
 using FileAttributeReporter.lib.Types;
@@ -47,7 +48,10 @@ namespace Report.Console
             }
             
             var parameters = new Parameters(Path: opts.InputPath, ParameterSearchMode: searchMode,
-                ParameterResultType: ResultType.ExcelFile, opts.OutputPath);
+                ParameterResultType: ResultType.ExcelFile, opts.OutputPath, (progress) =>
+                {
+                    OutputMessage(progress, opts.SilentMode);
+                });
 
             var validationResult = Reporter.Validate(parameters);
             if (!validationResult.Success)
@@ -66,6 +70,15 @@ namespace Report.Console
                 OutputMessage(!result.Success
                     ? $"Failed to output results report: {result.Reason}"
                     : $"Successfully output results report at: {result.Reason}", opts.SilentMode);
+
+                if (result.Success)
+                {
+                    string args = string.Format("/e, /select, \"{0}\"", result.Reason);
+                    ProcessStartInfo info = new ProcessStartInfo();
+                    info.FileName = "explorer";
+                    info.Arguments = args;
+                    Process.Start(info);
+                }
             }
 
             OutputMessage("Press any key to exit", opts.SilentMode);
