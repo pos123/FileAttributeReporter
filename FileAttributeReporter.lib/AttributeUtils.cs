@@ -51,6 +51,20 @@ namespace FileAttributeReporter.lib
             return machineType == MachineType.IMAGE_FILE_MACHINE_I386;
         }
 
+        private static BinaryArchitecture GetAssemblyBinaryArchitecture(string assemblyFile)
+        {
+            var assembly = System.Reflection.AssemblyName.GetAssemblyName(assemblyFile);
+            if (assembly.ProcessorArchitecture == System.Reflection.ProcessorArchitecture.Amd64)
+            {
+                return BinaryArchitecture.ManagedDotNet64;
+            }
+            else if (assembly.ProcessorArchitecture == System.Reflection.ProcessorArchitecture.X86)
+            {
+                return BinaryArchitecture.ManagedDotNet32;
+            }
+            return BinaryArchitecture.ManagedDotNet;
+        }
+
         private static bool IsAssembly(string path)
         {
             using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -82,7 +96,7 @@ namespace FileAttributeReporter.lib
 
             if (IsAssembly(fullBinaryPath))
             {
-                return BinaryArchitecture.ManagedDotNet;
+                return GetAssemblyBinaryArchitecture(fullBinaryPath);
             }
 
             return BinaryArchitecture.Unknown;

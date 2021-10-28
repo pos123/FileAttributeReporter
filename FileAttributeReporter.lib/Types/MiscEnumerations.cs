@@ -27,5 +27,5 @@
         IMAGE_FILE_MACHINE_WCEMIPSV2 = 0x169,
     }
 
-    public enum BinaryArchitecture { Unknown, Native32Bit, Native64, ManagedDotNet }
+    public enum BinaryArchitecture { Unknown, Native32Bit, Native64, ManagedDotNet, ManagedDotNet64, ManagedDotNet32 }
 }
