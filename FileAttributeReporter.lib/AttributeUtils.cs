@@ -88,7 +88,7 @@ namespace FileAttributeReporter.lib
             return BinaryArchitecture.Unknown;
         }
 
-        public static FileData GetFileAttributes(string fullPath, Action<string> reporter)
+        public static FileData GetFileAttributes(string fullPath, Action<string> progress)
         {
             var file = new FileInfo(fullPath);
 
@@ -105,14 +105,14 @@ namespace FileAttributeReporter.lib
             }
             catch (Exception ex)
             {
-                reporter?.Invoke($"Failed to get data for {file.Name} : {ex.Message}");
+                progress?.Invoke($"Failed to get data for {file.Name} : {ex.Message}");
                 throw;
             }
         }
 
-        public static IEnumerable<string> GetFiles(string path, string searchPatternExpression = "", SearchOption searchOption = SearchOption.TopDirectoryOnly, Action<string> reporter = null)
+        public static IEnumerable<string> GetFiles(string path, string searchPatternExpression = "", SearchOption searchOption = SearchOption.TopDirectoryOnly, Action<string> progress = null)
         {
-            reporter?.Invoke($"Searching for file(s) at {path} ...");
+            progress?.Invoke($"Searching for file(s) at {path} ...");
             var reSearchPattern = new Regex(searchPatternExpression, RegexOptions.IgnoreCase);
             return Directory.EnumerateFiles(path, "*", searchOption).Where(file => reSearchPattern.IsMatch(Path.GetExtension(file)));
         }

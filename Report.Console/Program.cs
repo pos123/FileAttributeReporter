@@ -56,37 +56,39 @@ namespace Report.Console
             var validationResult = Reporter.Validate(parameters);
             if (!validationResult.Success)
             {
-                OutputMessage($"Failed to parse: {validationResult.Reason}", opts.SilentMode);
+                OutputMessage($"Failed to parse: {validationResult.Message}", opts.SilentMode);
             }
 
             var reportResult = Reporter.RunReport(parameters);
             if (!reportResult.ReportValidation.Success)
             {
-                OutputMessage($"Failed to generate report: {validationResult.Reason}", opts.SilentMode);
+                OutputMessage($"Failed to generate report: {validationResult.Message}", opts.SilentMode);
             }
             else
             {
                 var result = Reporter.OutputResults(reportResult, parameters);
-                OutputMessage(!result.Success
-                    ? $"Failed to output results report: {result.Reason}"
-                    : $"Successfully output results report at: {result.Reason}", opts.SilentMode);
-
+                OutputMessage(!result.Success ? $"Failed to output results report: {result.Message}" : $"Successfully output results report at: {result.Message}", opts.SilentMode);
                 if (result.Success)
                 {
-                    string args = string.Format("/e, /select, \"{0}\"", result.Reason);
-                    ProcessStartInfo info = new ProcessStartInfo();
-                    info.FileName = "explorer";
-                    info.Arguments = args;
-                    Process.Start(info);
+                    DisplayFileInExplorer(result.Message);
                 }
             }
-
+            
             OutputMessage("Press any key to exit", opts.SilentMode);
 
             if (!opts.SilentMode)
             {
                 System.Console.ReadKey();
             }
+        }
+
+        static void DisplayFileInExplorer(string fullFilePath)
+        {
+            string args = string.Format("/e, /select, \"{0}\"", fullFilePath);
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.FileName = "explorer";
+            info.Arguments = args;
+            Process.Start(info);
         }
 
         static void OutputMessage(string message, bool silentMode)

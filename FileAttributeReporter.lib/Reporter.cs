@@ -14,12 +14,12 @@ namespace FileAttributeReporter.lib
             try
             {
                 return parameters.ParameterSearchMode == SearchMode.File
-                    ? new ReportResult(ReportValidation: new(true, Empty), AllFileData: new List<FileData> { AttributeUtils.GetFileAttributes(parameters.Path, parameters.Reporter) })
-                    : new ReportResult(ReportValidation: new(true, Empty), AllFileData: AttributeUtils.GetFilesInDirectoryAttributes(parameters.Path, parameters.ParameterSearchMode == SearchMode.DirectoryRecurse, parameters.Reporter));
+                    ? new ReportResult(ReportValidation: new(true, Empty), AllFileData: new List<FileData> { AttributeUtils.GetFileAttributes(parameters.Path, parameters.Progress) })
+                    : new ReportResult(ReportValidation: new(true, Empty), AllFileData: AttributeUtils.GetFilesInDirectoryAttributes(parameters.Path, parameters.ParameterSearchMode == SearchMode.DirectoryRecurse, parameters.Progress));
             }
             catch (Exception e)
             {
-                parameters.Reporter?.Invoke(e.Message);
+                parameters.Progress?.Invoke(e.Message);
                 return new ReportResult(new ReportValidation(false, $"{e.Message}"), null);
             }
         }
@@ -28,7 +28,7 @@ namespace FileAttributeReporter.lib
         {
             try
             {
-                return new ExcelReporter().Report(result, parameters.OutDetails, parameters.Reporter);
+                return new ExcelReporter().Report(result, parameters.OutDetails, parameters.Progress);
             }
             catch (Exception e)
             {

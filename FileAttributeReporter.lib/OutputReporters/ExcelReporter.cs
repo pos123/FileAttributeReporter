@@ -50,7 +50,7 @@ namespace FileAttributeReporter.lib.OutputReporters
             var outputFile = Path.Combine(directory, $"file_attributes_output_{now:dd_MM_yyyy_HH_mm_ss}.xlsx");
 
             workbook.SaveAs(outputFile);
-            return new ReportValidation(Success: true, Reason: outputFile);
+            return new ReportValidation(Success: true, Message: outputFile);
         }
 
         private void OutputTitle(IXLWorksheet workSheet, int row, int col)

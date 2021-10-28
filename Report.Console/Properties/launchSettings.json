@@ -2,7 +2,7 @@
   "profiles": {
     "Report.Console": {
       "commandName": "Project",
-      "commandLineArgs": "-m directoryAll -i \"C:\\program files\" "
+      "commandLineArgs": "-m directoryAll -i \"D:\\Documents\\Source\\repos\" "
     }
   }
 }
