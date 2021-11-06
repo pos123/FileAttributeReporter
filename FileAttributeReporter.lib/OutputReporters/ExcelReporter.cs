@@ -89,7 +89,6 @@ namespace FileAttributeReporter.lib.OutputReporters
         {
             // ReportGenerationTime
             workSheet.Cell(row, col).Value = $"{DateTime.Now:dd/MM/yyyy HH:mm:ss}";
-            workSheet.Cell(row, col++).SetDataType(XLDataType.DateTime);
 
             // MachineName
             workSheet.Cell(row, col++).Value = fileData.MachineName;
@@ -109,7 +108,6 @@ namespace FileAttributeReporter.lib.OutputReporters
             // LastModDateTime
             string parsedDate = fileData.LastModDateTime.ToString("dd/MM/yyyy HH:mm:ss");
             workSheet.Cell(row, col).Value = parsedDate;
-            workSheet.Cell(row, col).SetDataType(XLDataType.DateTime);
         }
     }
 }
