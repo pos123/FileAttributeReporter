@@ -1,16 +1,15 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 
-namespace FileAttributeReporter.lib.Test
+namespace FileAttributeReporter.lib.Test;
+
+public class AttributeTest
 {
-    public class AttributeTest
-    {
-        private const string testPath = "TODO";
+    private const string testPath = "TODO";
 
-        [Fact]
-        public void GivenFileName_CheckAttributesAreCorrect()
-        {
-            var fileAttributes = AttributeUtils.GetFileAttributes(testPath, null);
-        }
+    [Fact]
+    public void GivenFileName_CheckAttributesAreCorrect()
+    {
+        var fileAttributes = AttributeUtils.GetFileAttributes(testPath, null);
     }
 }
+
